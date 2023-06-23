@@ -21,7 +21,9 @@ class AdminMiddleware
 
         if (Auth::check()) {
             //assuming admin role id is 1
-            if ((Auth::user()->roles()->where('role_id', '=', 1)->first()) == null) {
+            $user = User::find(Auth::user()->id);
+            
+            if (($user->roles()->where('role_id', '=', 1)->first()) == null) {
               // currently logged in user is not an admin
                 Auth::logout();
                 return redirect('login');

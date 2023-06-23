@@ -9,7 +9,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Post extends Model
 {
     use HasFactory,SoftDeletes;
-    protected $guarded=['id','user_id'];
+    protected $guarded = ['id', 'user_id'];
+    protected $fillable = ['title', 'desc', 'content'];
+    protected $appends = ['published_date'];
+
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -17,6 +20,11 @@ class Post extends Model
     public function comments()
     {
         return $this->hasMany(Comment::class);
+    }
+
+    public function getPublishedDateAttribute()
+    {
+        return $this->created_at->diffForHumans();
     }
 
 }

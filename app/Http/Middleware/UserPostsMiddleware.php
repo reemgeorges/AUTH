@@ -18,13 +18,15 @@ class UserPostsMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        if ($request->has('trashed')) {
-            $user = Auth::user();
-            $postId = $request->route('post');
 
-            if ($user->hasRole('admin') || $user->posts()->where('id', $postId)->exists()) {
+
+            $user_data = Auth::user();
+            $postId = $request->route('post');
+            $user = User::find($user_data->id);
+
+            if ($user->roles()->where('role_name','admin')->first()->exists() || $user->posts()->where('id', $postId)->exists()) {
                 return $next($request);
-            }
+
         }
 
         abort(401, 'This action is unauthorized.');
